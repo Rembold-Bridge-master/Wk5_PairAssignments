@@ -1,0 +1,102 @@
+---
+title: "Week 5 Pair Problems"
+format:
+  html:
+    theme:
+      light: 
+        - cosmo
+        - ./psets.scss
+      dark: darkly
+    fontsize: 1.2em
+    highlight-style: atom-one
+    toc: true
+    toc-depth: 2
+    html-math-method: katex
+    embed-resources: true
+    title-block-banner: linear-gradient(90deg, rgba(117,76,245,1) 0%, rgba(0,212,255,1) 100%)
+    title-block-banner-color: white
+    smooth-scroll: true
+---
+
+This week we are focused on problems revolving around defining new classes. Writing constructors, defining attributes and methods, and a bit of inheritance will be practiced.
+
+```{=html}
+<a href='' target="_blank" class="btn btn-info" style='margin:auto; display: block; width:50%;'>Accept Problems</a>
+```
+<br>
+
+
+# Problem 1: A Standard Deck
+When originally learning to work with classes, I found it useful to work with objects which were very tactile and which I could easily envision defining an "object" for. To that end, in this first problem you will be working with playing cards. I have already provided code to you which defines a `Card` class, which stores both a rank and a suit. Internally, both of these values are encoded as numbers, but you will notice when you print a card to the screen that those numbers are converted to characters that better describe a typical playing card. Internally, a rank of 1 corresponds to an Ace, 2--10 correspond to the number cards, 11 corresponds to a Jack, 12 to a Queen, and 13 to a King. Suits range from 0 to 3 and correspond to club, diamond, heart, and spade, respectively. Getter functions are provided for both the rank and the suit, that will return to you their _numeric_ representations. Make sure you understand what is happening in this class before continuing.
+
+You task in this problem is to define a new class to represent an entire _deck_ of playing cards. Your standard deck of playing cards has 52 cards, with Ace through King in each of the 4 suits. You will be importing and using the `Card` class I already defined for you to represent the individual cards comprising your deck. The primary (and only) attribute of your `Deck` class will be a list of all the cards currently in the deck, and then you will define several methods to support and facilitate the types of actions you would commonly want to make with a deck of cards. In particular, your `Deck` class should include:
+
+1. A constructor which takes no extra arguments and which initializes a deck of the standard 52 playing cards whenever a new `Deck` object is created. This can be done by appending the necessary 52 cards objects to your deck list attribute. Loops are your friend here!
+2. A `shuffle` method which will shuffle or randomize the order of the cards currently within your deck. (The `random` library has a shuffle method that should make this pretty trivial.)
+3. A `draw` method which takes one argument `n` and draws the "top" `n` cards from your deck, returning a list of those cards. Here we are defining the "top" of the deck to be the beginning of the list of cards. The cards which were drawn should also be removed from the deck so that subsequent calls to `draw` will draw new cards.
+4. A getting method called `get_deck` which returns a **copy** of the current list of cards in the deck.
+5. A `__str__` or `__repr__` method which prints out a nice string representation of the cards still in the deck. Note that you may need to loop through and call `str` directly on the individual card objects to get them to display correctly. Using the `join` string method may also be useful.
+
+Creating and using some of these methods of your `Deck` class may result in output similar to below:
+![](./DeckUnicodeOutput.png)
+
+# Problem 2: Plane ol' Carriers
+This problem will be more focused around the ideas of inheritance, though you will still be constructing basic classes with constructors, attributes, and methods.
+
+I have already provided you with a defined `Vehicle` class in `Prob2.py`, which stores the following information as data attributes:
+
+- terrain: the type of terrain the vehicle navigates
+- weight: the weight of the vehicle
+
+The class includes a `__repr__` method so that it can be nicely printed to the screen and getter and setter methods for all its attributes. Take a moment to ensure you understand what is provided and happening in the code before moving on.
+
+1. Write a new class call `Boat` which inherits from `Vehicle` (because a boat is indeed a vehicles). For a boat, the terrain type should always be set to `"water"`. This means there is no point in passing in a type of terrain when you create a `Boat` object, so a boat will only have one argument when created: its weight. Override the `__repr__` method of `Boat` to correctly display the `Boat` object (this probably just means it should say Boat instead of Vehicle when it gets printed, and remove the terrain).
+
+   Write another new class called `Plane` which also inherits from `Vehicle`. A plane, naturally, should have its terrain type always set to `"air"`. Again, override the `__repr__` method to correctly display the `Plane` object when printed to the screen.
+
+   You should **always test your classes as you go**! Testing these might give outputs like:
+   ```python-repl
+   >>> A = Boat(1000)
+   >>> print(A)
+   Boat(1000)
+   >>> print(A.get_terrain())
+   water
+   >>> B = Plane(400)
+   >>> print(B.get_terrain())
+   air
+   ```
+2. Now write a third class called `Carrier` which inherits from `Boat` (and thus requires a weight argument to be papssed in on creation). Add two _new_ data attributes: one called `capacity` which is how many planes can be carried (and integer), and another called `onboard` which is a list of the current planes onboard. These are attributes that make a carrier unique from any other boat. `capacity` should be provided by an argument when a new `Carrier` is created, and `onboard` should be an empty list to start. Once again, be sure to override the `__repr__` method to return a new accurate description of the `Carrier` class object. Finally, add a getter method called `get_onboard` which returns a **copy** of the current list of onboard planes.
+
+   Testing at this point might look like:
+   ```python-repl
+   >>> A = Carrier(5000, 2)
+   >>> print(A)
+   Carrier(5000, 2)
+   >>> print(A.get_terrain())
+   water
+   >>> print(A.get_onboard())
+   []
+   ```
+3. Finally, add to your `Carrier` class two more methods to add and remove planes from `onboard` (call them `add_plane` and `remove_plane`, respectively). If adding another plane would go beyond a carrier's capacity, a suitable warning message should be printed to the screen and the plane should _not_ be added to the `onboard` list. Each plane added should **also** add its weight to the carrier. Removing a plane should remove that plane from the `onboard` list and subtract its weight from the carrier.
+
+   An example of testing all this functionality might look like:
+   ```python-repl
+   >>> C = Carrier(5000, 2)
+   >>> fighter = Plane(500)
+   >>> big_fighter = Plane(600)
+   >>> bomber = Plane(700)
+   >>> C.add_plane(fighter)
+   >>> print(C.get_weight())
+   5500
+   >>> C.add_plane(bomber)
+   >>> print(C.get_weight())
+   6200
+   >>> C.remove_plane(fighter)
+   >>> print(C.get_weight())
+   5700
+   >>> C.add_plane(big_fighter)
+   >>> C.add_plane(fighter)
+   'Capacity reached! This plane can not be added.'
+   >>> print(C.get_onboard())
+   [Plane(700), Plane(600)]
+   ```
